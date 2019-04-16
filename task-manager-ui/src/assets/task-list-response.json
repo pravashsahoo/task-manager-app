@@ -1,0 +1,83 @@
+{
+    "outData": [
+        {
+            "taskId": "1",
+            "taskName": "t1",
+            "priority": 50,
+            "parentTask": {
+                "parentTask": "p1"
+            },
+            "startDate": "10/10/2018",
+            "endDate": "10/10/2019",
+            "flag": "Y"
+        },
+        {
+            "taskId": "2",
+            "taskName": "t2",
+            "priority": 40,
+            "parentTask": {
+                "parentTask": "p2"
+            },
+            "startDate": "10/1/2018",
+            "endDate": "10/1/2019",
+            "flag": "N"
+        },
+        {
+            "taskId": "3",
+            "taskName": "t3",
+            "priority": 30,
+            "parentTask": {
+                "parentTask": "p3"
+            },
+            "startDate": "1/10/2018",
+            "endDate": "1/10/2019",
+            "flag": "N"
+        },
+        {
+            "taskId": "4",
+            "taskName": "a1",
+            "priority": 30,
+            "parentTask": {
+                "parentTask": "b1"
+            },
+            "startDate": "1/10/2018",
+            "endDate": "1/10/2019",
+            "flag": "N"
+        },
+        {
+            "taskId": "5",
+            "taskName": "a2",
+            "priority": 31,
+            "parentTask": {
+                "parentTask": "b1"
+            },
+            "startDate": "1/10/2018",
+            "endDate": "1/10/2019",
+            "flag": "N"
+        },
+        {
+            "taskId": "6",
+            "taskName": "a3",
+            "priority": 32,
+            "parentTask": {
+                "parentTask": "b1"
+            },
+            "startDate": "1/10/2018",
+            "endDate": "1/10/2019",
+            "flag": "N"
+        },
+        {
+            "taskId": "7",
+            "taskName": "a4",
+            "priority": 40,
+            "parentTask": {
+                "parentTask": "b1"
+            },
+            "startDate": "1/10/2018",
+            "endDate": "1/10/2019",
+            "flag": "N"
+        }
+    ],
+    "status": "Success",
+    "errCode": "0"
+}

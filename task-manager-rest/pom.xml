@@ -1,0 +1,209 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.cts</groupId>
+		<artifactId>task-manager-app</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>com.cts.rest</groupId>
+	<artifactId>task-manager-rest</artifactId>
+	<name>task-manager-rest</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<cucumber.version>1.2.4</cucumber.version>
+		<selenium.version>2.48.2</selenium.version>
+		<skip.integration.tests>false</skip.integration.tests>
+		<skip.unit.tests>false</skip.unit.tests>
+		<skip.jmeter.tests>false</skip.jmeter.tests>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.cts.ui</groupId>
+			<artifactId>task-manager-ui</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<!-- <version>5.1.46</version> -->
+			<!-- <version>5.1.6</version> -->
+		</dependency>
+
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-java8</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-junit</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-server</artifactId>
+			<version>${selenium.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<!-- unit test plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<!-- Skips unit tests if the value of skip.unit.tests property is true -->
+					<skipTests>${skip.unit.tests}</skipTests>
+					<!-- Excludes integration tests when unit tests are run -->
+					<includes>
+						<include>**/rest/**</include>
+					</includes>
+					<excludes>
+						<exclude>**/selenium/*.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<skip.integration.tests>true</skip.integration.tests>
+				<skip.unit.tests>false</skip.unit.tests>
+				<skip.jmeter.tests>true</skip.jmeter.tests>
+			</properties>
+		</profile>
+		<profile>
+			<id>jmeter-test</id>
+			<properties>
+				<skip.integration.tests>true</skip.integration.tests>
+				<skip.unit.tests>true</skip.unit.tests>
+				<skip.jmeter.tests>false</skip.jmeter.tests>
+			</properties>
+			<build>
+				<plugins>
+					<!-- Jmeter plugin -->
+					<plugin>
+						<groupId>com.lazerycode.jmeter</groupId>
+						<artifactId>jmeter-maven-plugin</artifactId>
+						<version>2.7.0</version>
+						<executions>
+							<!-- Run JMeter tests -->
+							<execution>
+								<id>jmeter-tests</id>
+								<goals>
+									<goal>jmeter</goal>
+								</goals>
+								<configuration>
+									<skipTests>${skip.jmeter.tests}</skipTests>
+								</configuration>
+							</execution>
+							<!-- Fail build on errors in test -->
+							<execution>
+								<id>jmeter-check-results</id>
+								<goals>
+									<goal>results</goal>
+								</goals>
+								<configuration>
+									<skipTests>${skip.jmeter.tests}</skipTests>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>de.codecentric</groupId>
+						<artifactId>jmeter-graph-maven-plugin</artifactId>
+						<version>0.1.0</version>
+						<configuration>
+							<inputFile>${project.build.directory}/jmeter/results/taskManager.jtl</inputFile>
+							<graphs>
+								<graph>
+									<pluginType>ResponseTimesOverTime</pluginType>
+									<width>800</width>
+									<height>600</height>
+									<outputFile>${project.build.directory}/jmeter/results/taskManager.png</outputFile>
+								</graph>
+							</graphs>
+							<skipTests>${skip.jmeter.tests}</skipTests>
+						</configuration>
+					</plugin>
+
+				</plugins>
+
+			</build>
+		</profile>
+		<profile>
+			<id>integration-test</id>
+			<properties>
+				<skip.integration.tests>false</skip.integration.tests>
+				<skip.unit.tests>true</skip.unit.tests>
+				<skip.jmeter.tests>true</skip.jmeter.tests>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<skipTests>${skip.integration.tests}</skipTests>
+							<includes>
+								<include>**/selenium/TaskManagerTestRunner.java</include>
+							</includes>
+							<excludes>
+								<exclude>**/rest/**/**.java</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>
